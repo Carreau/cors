@@ -1,0 +1,4 @@
+name = "cors"
+account_id = "7739d344d6aecfc26aea3f0b49f04511"
+main = "index.js"
+compatibility_date = "2024-05-24"
