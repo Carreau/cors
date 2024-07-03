@@ -1,6 +1,6 @@
 name = "cors"
 type = "javascript"
-account_id = "a61af432a401f41119744581fbeaeba0"
+account_id = "7739d344d6aecfc26aea3f0b49f04511"
 workers_dev = true
 route = ""
 zone_id = ""
