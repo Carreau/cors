@@ -1,35 +1,22 @@
-const APP_NAME = "cors.ryanking13"
-const HOSTNAME = "CORS_RYANKING13_WORKERS_DEV"
-const APP_KEY = "62492b64742400257938bd440f99a50f"
-
+const APP_NAME = ''
+const HOSTNAME = ''
+const APP_KEY = ''
 
 async function handleRequest(request) {
   const url = new URL(request.url)
-  const apiurl = url.searchParams.get('u')
+  const apiurl =
+    'https://pypi.anaconda.org/scientific-python-nightly-wheels/simple/'
   // Rewrite request to point to API url. This also makes the request mutable
   // so we can add the correct Origin header to make the API server think
   // that this request isn't cross-site.
-  if (apiurl === null) {
-    return new Response('url not given')
-  }
 
-  request = new Request(apiurl, request)
-  request.headers.set('Origin', new URL(apiurl).origin)
-
-  // return new Response(JSON.stringify([...request.headers], null, 2))
-  const host = url.searchParams.get('host')
-  if (host !== null) {
-    request.headers.set('Host', host)
-  }
-
-  let response = await fetch(request)
-
-  // return new Response(JSON.stringify([...response.headers], null, 2))
+  new_request = new Request(apiurl, request)
+  let response = await fetch(new_request)
 
   // Recreate the response so we can modify the headers
   response = new Response(response.body, response)
   // Set CORS headers
-  response.headers.set('Access-Control-Allow-Origin', "*")
+  response.headers.set('Access-Control-Allow-Origin', '*')
   // Append to/Add Vary header so browser will cache response correctly
   response.headers.append('Vary', 'Origin')
   return response
@@ -66,42 +53,39 @@ const getLogData = (request) => {
     app: APP_NAME,
     timestamp: Date.now(),
     meta: {
-      ua: request.headers.get("user-agent"),
-      referer: request.headers.get("Referer") || "empty",
-      ip: request.headers.get("CF-Connecting-IP"),
+      ua: request.headers.get('user-agent'),
+      referer: request.headers.get('Referer') || 'empty',
+      ip: request.headers.get('CF-Connecting-IP'),
       countryCode: (request.cf || {}).country,
       colo: (request.cf || {}).colo,
       url: request.url,
       method: request.method,
-      x_forwarded_for: request.headers.get("x_forwarded_for") || "0.0.0.0",
+      x_forwarded_for: request.headers.get('x_forwarded_for') || '0.0.0.0',
       asn: (request.cf || {}).asn,
-      cfRay: request.headers.get("cf-ray"),
+      cfRay: request.headers.get('cf-ray'),
       tlsCipher: (request.cf || {}).tlsCipher,
       tlsVersion: (request.cf || {}).tlsVersion,
       clientTrustScore: (request.cf || {}).clientTrustScore,
-    }
+    },
   }
   data.line = `${data.meta.countryCode} ${data.meta.ip} ${data.meta.referer} ==> ${data.meta.url}`
   return data
 }
 
-const postLog = request => {
+const postLog = (request) => {
   let data = JSON.stringify({ lines: [request] })
   let myHeaders = new Headers()
-  myHeaders.append("Content-Type", "application/json; charset=UTF-8")
-  myHeaders.append(
-    "Authorization",
-    "Basic " + btoa(APP_KEY + ":"),
-  )
+  myHeaders.append('Content-Type', 'application/json; charset=UTF-8')
+  myHeaders.append('Authorization', 'Basic ' + btoa(APP_KEY + ':'))
   try {
     return fetch(
-      "https://logs.logdna.com/logs/ingest?tag=worker&hostname=" + HOSTNAME,
+      'https://logs.logdna.com/logs/ingest?tag=worker&hostname=' + HOSTNAME,
       {
-        method: "POST",
+        method: 'POST',
         headers: myHeaders,
-        body: data
-      }
-    ).then(r => {
+        body: data,
+      },
+    ).then((r) => {
       requests = []
     })
   } catch (err) {
@@ -109,15 +93,15 @@ const postLog = request => {
   }
 }
 
-const log = async event => {
-  if (APP_KEY === "") {
+const log = async (event) => {
+  if (APP_KEY === '') {
     return new Promise()
   }
 
   return postLog(getLogData(event.request))
 }
 
-addEventListener('fetch', event => {
+addEventListener('fetch', (event) => {
   const request = event.request
   const url = new URL(request.url)
   if (request.method === 'OPTIONS') {
@@ -129,9 +113,9 @@ addEventListener('fetch', event => {
     request.method === 'POST'
   ) {
     // Handle requests to the API server
-    const loggingEvent = log(event)
+    //const loggingEvent = log(event)
     const response = handleRequest(request)
-    event.waitUntil(loggingEvent)
+    //event.waitUntil(loggingEvent)
     event.respondWith(response)
   } else {
     event.respondWith(async () => {
