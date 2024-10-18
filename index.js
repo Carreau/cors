@@ -4,13 +4,22 @@ const APP_KEY = ''
 
 async function handleRequest(request) {
   const url = new URL(request.url)
-  const apiurl =
-    'https://pypi.anaconda.org/scientific-python-nightly-wheels/simple/'
+  const pathParts = url.pathname.split('/').filter((part) => part.length > 0)
+  console.log('Path::', url.pathname, pathParts)
+  const apiurl = 'https://pypi.anaconda.org'
   // Rewrite request to point to API url. This also makes the request mutable
   // so we can add the correct Origin header to make the API server think
   // that this request isn't cross-site.
+  //
+  if (pathParts.length < 2) {
+    return new Response(
+      'Internal Server Error: Invalid path need at least 2 path parts',
+      { status: 500 },
+    )
+  }
 
-  new_request = new Request(apiurl, request)
+  //
+  new_request = new Request(apiurl + url.pathname, request)
   let response = await fetch(new_request)
 
   // Recreate the response so we can modify the headers

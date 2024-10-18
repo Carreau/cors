@@ -1,6 +1,3 @@
 name = "cors"
-type = "javascript"
-account_id = "7739d344d6aecfc26aea3f0b49f04511"
-workers_dev = true
-route = ""
-zone_id = ""
+main = "index.js"
+compatibility_date = "2024-05-24"
